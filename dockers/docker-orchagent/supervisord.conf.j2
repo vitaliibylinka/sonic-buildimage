@@ -242,3 +242,19 @@ stderr_logfile=syslog
 dependent_startup=true
 dependent_startup_wait_for=swssconfig:exited
 {%- endif %}
+
+
+{% if is_fabric_asic == 0 %}
+[program:stpmgrd]
+command=/usr/bin/stpmgrd
+priority=18
+autostart=false
+autorestart=false
+stdout_logfile=syslog
+stderr_logfile=syslog
+dependent_startup=true
+dependent_startup_wait_for=swssconfig:exited
+{% if ENABLE_ASAN == "y" %}
+environment=ASAN_OPTIONS="log_path=/var/log/asan/stpmgrd-asan.log{{ asan_extra_options }}"
+{% endif %}
+{%- endif %}

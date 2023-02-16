@@ -1,1 +1,3 @@
 program:restapi
+program:stpd
+program:stpmgrd
