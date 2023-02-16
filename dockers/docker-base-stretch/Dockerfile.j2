@@ -92,7 +92,8 @@ RUN pip install j2cli
 
 # Install supervisor
 RUN pip install supervisor>=3.4.0
-
+# Use correct toposort version (supervisord-dependent-startup==1.4.0 dependency)
+RUN pip install toposort==1.5
 # Add support for supervisord to handle startup dependencies
 RUN pip install supervisord-dependent-startup==1.4.0
 
