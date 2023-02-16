@@ -2,25 +2,25 @@
 
 ifdown --force eth0
 
-# Check if ZTP DHCP policy has been installed
-if [ -e /etc/network/ifupdown2/policy.d/ztp_dhcp.json ]; then
+# Check if STP DHCP policy has been installed
+if [ -e /etc/network/ifupdown2/policy.d/stp_dhcp.json ]; then
     # Obtain port operational state information
-    redis-dump -d 0 -k "PORT_TABLE:Ethernet*"  -y > /tmp/ztp_port_data.json
+    redis-dump -d 0 -k "PORT_TABLE:Ethernet*"  -y > /tmp/stp_port_data.json
 
-    if [ $? -ne 0 ] || [ ! -e /tmp/ztp_port_data.json ] || [ "$(cat /tmp/ztp_port_data.json)" = "" ]; then
-        echo "{}" > /tmp/ztp_port_data.json
+    if [ $? -ne 0 ] || [ ! -e /tmp/stp_port_data.json ] || [ "$(cat /tmp/stp_port_data.json)" = "" ]; then
+        echo "{}" > /tmp/stp_port_data.json
     fi
 
-    # Create an input file with ztp input information
-    echo "{ \"PORT_DATA\" : $(cat /tmp/ztp_port_data.json) }" > \
-          /tmp/ztp_input.json
+    # Create an input file with stp input information
+    echo "{ \"PORT_DATA\" : $(cat /tmp/stp_port_data.json) }" > \
+          /tmp/stp_input.json
 else
-    echo "{ \"ZTP_DHCP_DISABLED\" : \"true\" }" > /tmp/ztp_input.json
+    echo "{ \"STP_DHCP_DISABLED\" : \"true\" }" > /tmp/stp_input.json
 fi
 
 # Create /e/n/i file for existing and active interfaces, dhcp6 sytcl.conf and dhclient.conf
 CFGGEN_PARAMS=" \
-    -d -j /tmp/ztp_input.json \
+    -d -j /tmp/stp_input.json \
     -t /usr/share/sonic/templates/interfaces.j2,/etc/network/interfaces \
     -t /usr/share/sonic/templates/90-dhcp6-systcl.conf.j2,/etc/sysctl.d/90-dhcp6-systcl.conf \
     -t /usr/share/sonic/templates/dhclient.conf.j2,/etc/dhcp/dhclient.conf \
@@ -40,4 +40,4 @@ sysctl -p /etc/sysctl.d/90-dhcp6-systcl.conf
 systemctl restart networking
 
 # Clean-up created files
-rm -f /tmp/ztp_input.json /tmp/ztp_port_data.json
+rm -f /tmp/stp_input.json /tmp/stp_port_data.json

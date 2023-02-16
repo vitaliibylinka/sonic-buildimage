@@ -34,12 +34,12 @@ request subnet-mask, broadcast-address, time-offset, routers,
         domain-name, domain-name-servers, domain-search, host-name,
         dhcp6.name-servers, dhcp6.domain-search, interface-mtu, dhcp6.fqdn,
         rfc3442-classless-static-routes, ntp-servers, log-servers,
-{%- if ZTP is defined and ZTP_DHCP_DISABLED is not defined -%}bootfile-name, provisioning-script-url, tftp-server-name,
+{%- if STP is defined and STP_DHCP_DISABLED is not defined -%}bootfile-name, provisioning-script-url, tftp-server-name,
         dhcp6.provisioning-script-url, dhcp6.boot-file-url,{%- endif -%}
         snmp-community, minigraph-url, acl-url;
-{% if ZTP is defined and ZTP_DHCP_DISABLED is not defined %}
-send user-class "SONiC-ZTP";
-send dhcp6.user-class "SONiC-ZTP";
-send dhcp-client-identifier "SONiC##{{ ZTP['mode']['product-name'] }}##{{ ZTP['mode']['serial-no'] }}";
+{% if STP is defined and STP_DHCP_DISABLED is not defined %}
+send user-class "SONiC-STP";
+send dhcp6.user-class "SONiC-STP";
+send dhcp-client-identifier "SONiC##{{ STP['mode']['product-name'] }}##{{ STP['mode']['serial-no'] }}";
 retry 60;
 {% endif %}

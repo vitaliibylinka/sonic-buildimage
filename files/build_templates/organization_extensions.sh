@@ -1,7 +1,7 @@
 #!/bin/bash
 #########################################################################
 ## This script is to automate Orignaization specific extensions 	#
-## such as Configuration & Scripts for features like AAA, ZTP, etc.	#
+## such as Configuration & Scripts for features like AAA, STP, etc.	#
 ## to include in ONIE installer image					#
 ##									#
 ## USAGE:								#

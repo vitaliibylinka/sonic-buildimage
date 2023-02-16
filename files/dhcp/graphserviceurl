@@ -1,4 +1,4 @@
-if [ ! -e /usr/bin/ztp ] || [ "$(ztp status -c)" = "0:DISABLED" ]; then
+if [ ! -e /usr/bin/stp ] || [ "$(stp status -c)" = "0:DISABLED" ]; then
     case $reason in
         BOUND|RENEW|REBIND|REBOOT)
             if [ -n "$new_minigraph_url" ]; then

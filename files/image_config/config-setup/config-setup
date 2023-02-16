@@ -32,7 +32,7 @@ CONFIG_DB_PATH=/etc/sonic/
 CONFIG_DB_PREFIX=config_db
 CONFIG_DB_SUFFIX=.json
 MINGRAPH_FILE=/etc/sonic/minigraph.xml
-TMP_ZTP_CONFIG_DB_JSON=/tmp/ztp_config_db.json
+TMP_STP_CONFIG_DB_JSON=/tmp/stp_config_db.json
 FACTORY_DEFAULT_HOOKS=/etc/config-setup/factory-default-hooks.d
 CONFIG_PRE_MIGRATION_HOOKS=/etc/config-setup/config-migration-pre-hooks.d
 CONFIG_POST_MIGRATION_HOOKS=/etc/config-setup/config-migration-post-hooks.d
@@ -179,21 +179,21 @@ disable_updategraph()
 }
 
 # Check if Zero Touch Provisioning is available and is administratively enabled
-ztp_is_enabled()
+stp_is_enabled()
 {
     rv=1
-    if [ -e /usr/bin/ztp ]; then
-        status=$(ztp status -c)
+    if [ -e /usr/bin/stp ]; then
+        status=$(stp status -c)
         [ "$status" != "0:DISABLED" ] && [ "$status" != "" ] && rv=0
     fi
     return $rv
 }
 
 # Generate requested SONiC configuration and save it as destination file
-# Usage: generate_config < factory | ztp > <destination_file>
+# Usage: generate_config < factory | stp > <destination_file>
 #
 #        factory - Create factory default configuration
-#        ztp - Create Zero Touch Provisioning Configuration
+#        stp - Create Zero Touch Provisioning Configuration
 #              used for provisioning data discovery.
 #
 generate_config()
@@ -208,8 +208,8 @@ generate_config()
     CONFIG_TYPE=$1
     DEST_FILE=$2
 
-    if [ "$1" = "ztp" ]; then
-        /usr/lib/ztp/ztp-profile.sh create ${DEST_FILE}
+    if [ "$1" = "stp" ]; then
+        /usr/lib/stp/stp-profile.sh create ${DEST_FILE}
     elif [ "$1" = "factory" ]; then
         rv=1
 
@@ -229,26 +229,26 @@ generate_config()
 }
 
 # Create SONiC configuration for first time bootup
-#  - If ZTP is enabled, ZTP configuraion is created
-#  - If ZTP is disabled and updategraph is disabled, factory default configuration
+#  - If STP is enabled, STP configuraion is created
+#  - If STP is disabled and updategraph is disabled, factory default configuration
 #    is created
-#  - If updategraph is enabled and ZTP is disabled, updategraph initializes
+#  - If updategraph is enabled and STP is disabled, updategraph initializes
 #    configuration
 do_config_initialization()
 {
     if  ! updategraph_is_enabled ; then
-        if ! ztp_is_enabled ; then
+        if ! stp_is_enabled ; then
             echo "No configuration detected, generating factory default configuration..."
             generate_config factory ${CONFIG_DB_JSON}
             reload_configdb ${CONFIG_DB_JSON}
         fi
     fi
 
-    if  ztp_is_enabled ; then
+    if  stp_is_enabled ; then
         echo "No configuration detected, initiating zero touch provisioning..."
-        generate_config ztp ${TMP_ZTP_CONFIG_DB_JSON}
-        reload_configdb ${TMP_ZTP_CONFIG_DB_JSON}
-        rm -f ${TMP_ZTP_CONFIG_DB_JSON}
+        generate_config stp ${TMP_STP_CONFIG_DB_JSON}
+        reload_configdb ${TMP_STP_CONFIG_DB_JSON}
+        rm -f ${TMP_STP_CONFIG_DB_JSON}
     fi
 
     rm -f /tmp/pending_config_initialization
@@ -357,8 +357,8 @@ do_config_backup()
 #  - Check if it is warm boot and take no further action
 #  - Perform configuration migration if requested
 #  - Perform configuration initialization if requested
-#  - If no saved SONiC configuration is found and ZTP is enabled,
-#    start ZTP
+#  - If no saved SONiC configuration is found and STP is enabled,
+#    start STP
 boot_config()
 {
     check_system_warm_boot
@@ -381,15 +381,15 @@ boot_config()
     # If no startup configuration is found, create a configuration to be used
     if [ ! -e ${CONFIG_DB_JSON} ]; then
         do_config_initialization
-        # force ZTP to restart
-        if  ztp_is_enabled ; then
-            ztp_status=$(ztp status -c)
-            if [ "$ztp_status" = "5:SUCCESS" ] || \
-          [ "$ztp_status" = "6:FAILED" ]; then
-                # Clear completed ztp information, before starting a new one
-                ztp erase -y
+        # force STP to restart
+        if  stp_is_enabled ; then
+            stp_status=$(stp status -c)
+            if [ "$stp_status" = "5:SUCCESS" ] || \
+          [ "$stp_status" = "6:FAILED" ]; then
+                # Clear completed stp information, before starting a new one
+                stp erase -y
             else
-                touch /tmp/pending_ztp_restart
+                touch /tmp/pending_stp_restart
             fi
         fi
     fi

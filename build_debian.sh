@@ -504,7 +504,7 @@ if [ -f sonic_debian_extension.sh ]; then
     ./sonic_debian_extension.sh $FILESYSTEM_ROOT $PLATFORM_DIR $IMAGE_DISTRO
 fi
 
-## Organization specific extensions such as Configuration & Scripts for features like AAA, ZTP...
+## Organization specific extensions such as Configuration & Scripts for features like AAA, STP...
 if [ "${enable_organization_extensions}" = "y" ]; then
    if [ -f files/build_templates/organization_extensions.sh ]; then
       sudo chmod 755 files/build_templates/organization_extensions.sh

@@ -29,9 +29,9 @@ if [ "$enabled" != "true" ]; then
     exit 0
 fi
 
-# If ZTP package is available and enabled, use ZTP to download and load the graph.
-if [ -e /usr/bin/ztp ] && [ "$(ztp status -c)" != "0:DISABLED" ]; then
-    echo "ZTP is available and enabled. Skipping graph update."
+# If STP package is available and enabled, use STP to download and load the graph.
+if [ -e /usr/bin/stp ] && [ "$(stp status -c)" != "0:DISABLED" ]; then
+    echo "STP is available and enabled. Skipping graph update."
     exit 0
 fi
 

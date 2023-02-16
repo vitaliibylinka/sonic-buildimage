@@ -280,9 +280,9 @@ sudo rm -rf $FILESYSTEM_ROOT/$SONIC_HOST_SERVICES_PY3_WHEEL_NAME
 sudo dpkg --root=$FILESYSTEM_ROOT -i $debs_path/sonic-host-services-data_*.deb || \
     sudo LANG=C DEBIAN_FRONTEND=noninteractive chroot $FILESYSTEM_ROOT apt-get -y install -f
 
-{% if enable_ztp == "y" %}
-# Install ZTP (and its dependencies via 'apt-get -y install -f')
-sudo dpkg --root=$FILESYSTEM_ROOT -i $debs_path/sonic-ztp_*.deb || \
+{% if enable_stp == "y" %}
+# Install STP (and its dependencies via 'apt-get -y install -f')
+sudo dpkg --root=$FILESYSTEM_ROOT -i $debs_path/sonic-stp_*.deb || \
     sudo LANG=C DEBIAN_FRONTEND=noninteractive chroot $FILESYSTEM_ROOT apt-get -y install -f
 {% endif %}
 

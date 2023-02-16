@@ -30,31 +30,31 @@ iface lo inet loopback
 
 # The management network interface
 auto eth0
-{% if (ZTP_DHCP_DISABLED is not defined) and (ZTP is defined) and (ZTP['mode'] is defined and ZTP['mode']['profile'] == 'active') %}
+{% if (STP_DHCP_DISABLED is not defined) and (STP is defined) and (STP['mode'] is defined and STP['mode']['profile'] == 'active') %}
 
 
-# ZTP out-of-band interface
+# STP out-of-band interface
 allow-hotplug eth0
-{% if ZTP['mode']['ipv4'] == 'true' %}
+{% if STP['mode']['ipv4'] == 'true' %}
 iface eth0 inet dhcp
 {% endif %}
-{% if ZTP['mode']['ipv6'] == 'true' %}
+{% if STP['mode']['ipv6'] == 'true' %}
 iface eth0 inet6 dhcp
     up sysctl net.ipv6.conf.eth0.accept_ra=1
     down sysctl net.ipv6.conf.eth0.accept_ra=0
 {% endif %}
 
-{% if ZTP['mode']['inband'] == 'true' %}
+{% if STP['mode']['inband'] == 'true' %}
 {% for port in PORT %}
 
-# ZTP in-band interface {{ port }}
+# STP in-band interface {{ port }}
 auto {{ port }}
 allow-hotplug {{ port }}
 {% if PORT_DATA['PORT_TABLE:'+port] is defined and PORT_DATA['PORT_TABLE:'+port]['value']['oper_status'] == 'up' %}
-{% if ZTP['mode']['ipv4'] == 'true' %}
+{% if STP['mode']['ipv4'] == 'true' %}
 iface {{ port }} inet dhcp
 {% endif %}
-{% if ZTP['mode']['ipv6'] == 'true' %}
+{% if STP['mode']['ipv6'] == 'true' %}
 iface {{ port }} inet6 dhcp
 {% endif %}
 {% endif %}
