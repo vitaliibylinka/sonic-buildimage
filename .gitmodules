@@ -90,4 +90,4 @@
 	url = https://github.com/nokia/sonic-platform.git
 [submodule "src/sonic-stp"]
 	path = src/sonic-stp
-	url = https://github.com/sonic-net/sonic-stp
+	url = https://github.com/vitaliibylinka/sonic-stp
